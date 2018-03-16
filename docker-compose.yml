@@ -1,0 +1,57 @@
+version: '3'
+services:
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    links:
+      - server
+      - grafana
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./.data/nginx/log:/var/log/nginx
+      - ./nginx/conf.d:/etc/nginx/conf.d
+
+  db:
+    image: postgres:alpine
+    restart: unless-stopped
+    volumes:
+      - ./.data/db:/var/lib/postgresql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      PGDATA: /var/lib/postgresql/pgdata
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASS: postgres
+    # ports:
+    #   - 5432:5432
+
+  server:
+    build:
+      context: ./server
+    restart: unless-stopped
+    depends_on:
+      - db
+    links:
+      - db
+    # ports:
+    #   - 3001:3000
+      
+  grafana:
+    build:
+      context: ./grafana
+    restart: unless-stopped
+    # ports:
+    #   - 3000:3000
+    # environment:
+    #   GF_DATABASE_TYPE: postgres
+    #   GF_DATABASE_HOST: db
+    #   GF_DATABASE_NAME: grafana
+    #   GF_DATABASE_USER: grafana_user
+    depends_on:
+      - db
+    links:
+      - db
+    volumes:
+      - ./.data/grafana:/var/lib/grafana

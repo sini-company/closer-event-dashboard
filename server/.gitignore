@@ -1,0 +1,4 @@
+# go build output binary
+server
+# vendor packages
+vendor
