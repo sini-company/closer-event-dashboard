@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"regexp"
+	"strings"
 	"sync"
 	"time"
 	// postgres driver
@@ -13,6 +15,11 @@ import (
 
 var once sync.Once
 var instance *sql.DB
+
+// oneLine trims all leading / traialing / doubled whitespace
+func oneLine(str string) string {
+	return strings.TrimSpace(regexp.MustCompile("(\\s{2,})").ReplaceAllString(str, " "))
+}
 
 // GetDBConnection get database connection
 func GetDBConnection() *sql.DB {
@@ -37,10 +44,11 @@ func InsertEvent(event Event) {
 		dataString = fmt.Sprintf("'%s'", dataString)
 	}
 
-	query := fmt.Sprintf(`
-		INSERT INTO events (id, sourceId, sourceType, event, data, timestamp)
-		VALUES ('%s', '%s', '%s', '%s', %s, '%s');
-	`,
+	query := fmt.Sprintf(
+		oneLine(`
+			INSERT INTO events (id, sourceId, sourceType, event, data, timestamp)
+			VALUES ('%s', '%s', '%s', '%s', %s, '%s');
+		`),
 		event.ID,
 		event.SourceID,
 		event.SourceType,
@@ -50,6 +58,6 @@ func InsertEvent(event Event) {
 
 	_, err := db.Query(query)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 }
