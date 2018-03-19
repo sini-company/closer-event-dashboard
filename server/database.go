@@ -46,7 +46,7 @@ func InsertEvent(event Event) {
 
 	query := fmt.Sprintf(
 		oneLine(`
-			INSERT INTO events (id, sourceId, sourceType, event, data, timestamp)
+			INSERT INTO events (id, source_id, source_type, event, data, timestamp)
 			VALUES ('%s', '%s', '%s', '%s', %s, '%s');
 		`),
 		event.ID,

@@ -23,8 +23,8 @@ GRANT ALL PRIVILEGES ON DATABASE grafana TO grafana_user;
 CREATE TABLE IF NOT EXISTS events (
     id UUID NOT NULL PRIMARY KEY,
     event VARCHAR(255) NOT NULL,
-    sourceId VARCHAR(255) NOT NULL,
-    sourceType VARCHAR(255) NOT NULL,
+    source_id VARCHAR(255) NOT NULL,
+    source_type VARCHAR(255) NOT NULL,
     data JSONB DEFAULT '{}'::jsonb,
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL
 );
