@@ -21,8 +21,8 @@ func oneLine(str string) string {
 	return strings.TrimSpace(regexp.MustCompile("(\\s{2,})").ReplaceAllString(str, " "))
 }
 
-// GetDBConnection get database connection
-func GetDBConnection() *sql.DB {
+// GetDBInstance get database
+func GetDBInstance() *sql.DB {
 	once.Do(func() {
 		connStr := "postgres://postgres:postgres@db:5432/closer_event?sslmode=disable"
 		db, err := sql.Open("postgres", connStr)
@@ -34,30 +34,29 @@ func GetDBConnection() *sql.DB {
 	return instance
 }
 
-// InsertEvent insert each event
-func InsertEvent(event Event) {
-	db := GetDBConnection()
-	data, _ := json.Marshal(event.Data)
-	dataString := string(data)
-
-	if string(data) != "null" {
-		dataString = fmt.Sprintf("'%s'", dataString)
+// InsertEvents insert each event
+func InsertEvents(events ...Event) {
+	db := GetDBInstance()
+	stmt, err := db.Prepare(oneLine(`
+		INSERT INTO events (id, source_id, source_type, event, data, timestamp)
+		VALUES ($1, $2, $3, $4, $5, $6);
+	`))
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	query := fmt.Sprintf(
-		oneLine(`
-			INSERT INTO events (id, source_id, source_type, event, data, timestamp)
-			VALUES ('%s', '%s', '%s', '%s', %s, '%s');
-		`),
-		event.ID,
-		event.SourceID,
-		event.SourceType,
-		event.Event,
-		dataString,
-		time.Unix(event.Timestamp/1000, event.Timestamp%1000).UTC().Format(time.RFC3339))
+	for _, event := range events {
+		data, _ := json.Marshal(event.Data)
+		_, err = stmt.Exec(
+			event.ID,
+			event.SourceID,
+			event.SourceType,
+			event.Event,
+			string(data),
+			time.Unix(event.Timestamp/1000, event.Timestamp%1000).UTC().Format(time.RFC3339))
 
-	_, err := db.Query(query)
-	if err != nil {
-		fmt.Println(err)
+		if err != nil && !strings.Contains(err.Error(), "events_pkey") {
+			fmt.Println(err)
+		}
 	}
 }

@@ -30,7 +30,6 @@ type Delivery struct {
 // WebhookServer returns the value for key or ok=false if there is no mapping for key.
 func WebhookServer(w http.ResponseWriter, req *http.Request) {
 	if req.Method == "POST" && req.URL.Path == "/webhook-endpoint" {
-
 		var delivery Delivery
 		decoder := json.NewDecoder(req.Body)
 		err := decoder.Decode(&delivery)
@@ -38,9 +37,8 @@ func WebhookServer(w http.ResponseWriter, req *http.Request) {
 		if err != nil {
 			http.Error(w, `400 bad request`, http.StatusBadRequest)
 		}
-		for _, element := range delivery.Messages {
-			InsertEvent(element)
-		}
+		log.Printf("received %d event(s).", len(delivery.Messages))
+		InsertEvents(delivery.Messages...)
 		io.WriteString(w, "OK")
 	} else {
 		http.Error(w, "404 not found", http.StatusNotFound)
@@ -51,6 +49,11 @@ func WebhookServer(w http.ResponseWriter, req *http.Request) {
 func main() {
 	port := flag.Int("port", 3000, "port of http server")
 	flag.Parse()
+
+	db := GetDBInstance()
+	db.SetMaxIdleConns(10)
+	db.SetMaxOpenConns(90) // max_connection is set to 100 (default)
+	defer db.Close()
 
 	http.HandleFunc("/", WebhookServer)
 	log.Printf("start webhook server on port %d", *port)
