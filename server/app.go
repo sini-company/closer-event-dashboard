@@ -7,6 +7,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
 )
 
 // Event closer webhook delivery payload
@@ -27,6 +29,13 @@ type Delivery struct {
 	Messages   []Event `json:"messages"`
 }
 
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
+
 // WebhookServer returns the value for key or ok=false if there is no mapping for key.
 func WebhookServer(w http.ResponseWriter, req *http.Request) {
 	if req.Method == "POST" && req.URL.Path == "/webhook-endpoint" {
@@ -40,6 +49,10 @@ func WebhookServer(w http.ResponseWriter, req *http.Request) {
 		log.Printf("received %d event(s).", len(delivery.Messages))
 		InsertEvents(delivery.Messages...)
 		io.WriteString(w, "OK")
+
+	} else if req.Method == "GET" && req.URL.Path == "/health" {
+		io.WriteString(w, "OK")
+
 	} else {
 		http.Error(w, "404 not found", http.StatusNotFound)
 		return
@@ -47,7 +60,8 @@ func WebhookServer(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	port := flag.Int("port", 3000, "port of http server")
+	envPort, _ := strconv.Atoi(getEnv("PORT", "3000"))
+	port := flag.Int("port", envPort, "port of http server")
 	flag.Parse()
 
 	db := GetDBInstance()
