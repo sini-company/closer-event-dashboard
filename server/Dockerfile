@@ -17,10 +17,12 @@ COPY . /go/src/project/
 
 # Install library dependencies
 # RUN go build -o /bin/app (only work in same linux environment)
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix nocgo -o /bin/app
+RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o /bin/healthcheck ./healthcheck
+RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o /bin/app
 
 # This results in a single layer image
 FROM scratch
-COPY --from=build /bin/app /bin/app
-
+ENV PORT=3000
+COPY --from=build /bin /bin
+HEALTHCHECK CMD ["/bin/healthcheck"]
 ENTRYPOINT ["/bin/app"]

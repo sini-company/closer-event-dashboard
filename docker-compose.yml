@@ -1,5 +1,12 @@
 version: '3'
 services:
+  autoheal:
+    restart: always
+    image: willfarrell/autoheal
+    environment:
+      - AUTOHEAL_CONTAINER_LABEL=autoheal
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   nginx:
     image: nginx:alpine
     restart: unless-stopped
@@ -31,6 +38,8 @@ services:
     build:
       context: ./server
     restart: unless-stopped
+    labels:
+      - autoheal=true
     depends_on:
       - db
     links:
