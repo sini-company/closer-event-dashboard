@@ -28,3 +28,6 @@ CREATE TABLE IF NOT EXISTS events (
     data JSONB DEFAULT '{}'::jsonb,
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL
 );
+
+CREATE INDEX events_event_source_id
+  ON events (event, source_id);
