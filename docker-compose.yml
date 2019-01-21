@@ -44,23 +44,17 @@ services:
       - db
     links:
       - db
-    # ports:
-    #   - 3001:3000
-      
+
   grafana:
     build:
       context: ./grafana
     restart: unless-stopped
-    # ports:
-    #   - 3000:3000
-    # environment:
-    #   GF_DATABASE_TYPE: postgres
-    #   GF_DATABASE_HOST: db
-    #   GF_DATABASE_NAME: grafana
-    #   GF_DATABASE_USER: grafana_user
+    environment:
+      GF_DATABASE_TYPE: postgres
+      GF_DATABASE_HOST: db
+      GF_DATABASE_NAME: grafana
+      GF_DATABASE_USER: grafana_user
     depends_on:
       - db
     links:
       - db
-    volumes:
-      - ./.data/grafana:/var/lib/grafana
