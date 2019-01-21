@@ -1,0 +1,849 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "$$hashKey": "object:561",
+          "builtIn": 1,
+          "datasource": "-- Grafana --",
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "gnetId": null,
+    "graphTooltip": 0,
+    "id": null,
+    "iteration": 1548034984293,
+    "links": [],
+    "panels": [
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": false,
+        "colors": [
+          "#299c46",
+          "rgba(237, 129, 40, 0.89)",
+          "#d44a3a"
+        ],
+        "datasource": "closer_event",
+        "format": "none",
+        "gauge": {
+          "maxValue": 100,
+          "minValue": 0,
+          "show": false,
+          "thresholdLabels": false,
+          "thresholdMarkers": true
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 0,
+          "y": 0
+        },
+        "id": 17,
+        "interval": null,
+        "links": [],
+        "mappingType": 1,
+        "mappingTypes": [
+          {
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [
+          {
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }
+        ],
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": false
+        },
+        "tableColumn": "count",
+        "targets": [
+          {
+            "alias": "",
+            "format": "table",
+            "hide": false,
+            "rawSql": "SELECT COUNT(*)\nFROM get_chat_frames($__timeFrom(), $__timeTo())",
+            "refId": "A"
+          }
+        ],
+        "thresholds": "",
+        "title": "상담 요청",
+        "type": "singlestat",
+        "valueFontSize": "80%",
+        "valueMaps": [
+          {
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }
+        ],
+        "valueName": "avg"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": false,
+        "colors": [
+          "#299c46",
+          "rgba(237, 129, 40, 0.89)",
+          "#d44a3a"
+        ],
+        "datasource": "closer_event",
+        "format": "none",
+        "gauge": {
+          "maxValue": 100,
+          "minValue": 0,
+          "show": false,
+          "thresholdLabels": false,
+          "thresholdMarkers": true
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 4,
+          "y": 0
+        },
+        "id": 21,
+        "interval": null,
+        "links": [],
+        "mappingType": 1,
+        "mappingTypes": [
+          {
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [
+          {
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }
+        ],
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": false
+        },
+        "tableColumn": "all_missed",
+        "targets": [
+          {
+            "alias": "",
+            "format": "table",
+            "hide": false,
+            "rawSql": "SELECT\n  COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') THEN 1 END) AS all_missed\nFROM get_chat_frames($__timeFrom(), $__timeTo())",
+            "refId": "A"
+          }
+        ],
+        "thresholds": "",
+        "title": "취소된 요청",
+        "type": "singlestat",
+        "valueFontSize": "80%",
+        "valueMaps": [
+          {
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }
+        ],
+        "valueName": "avg"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": false,
+        "colors": [
+          "#299c46",
+          "rgba(237, 129, 40, 0.89)",
+          "#d44a3a"
+        ],
+        "datasource": "closer_event",
+        "format": "none",
+        "gauge": {
+          "maxValue": 100,
+          "minValue": 0,
+          "show": false,
+          "thresholdLabels": false,
+          "thresholdMarkers": true
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 8,
+          "y": 0
+        },
+        "id": 22,
+        "interval": null,
+        "links": [],
+        "mappingType": 1,
+        "mappingTypes": [
+          {
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [
+          {
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }
+        ],
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": false
+        },
+        "tableColumn": "non_missed",
+        "targets": [
+          {
+            "alias": "",
+            "format": "table",
+            "hide": false,
+            "rawSql": "SELECT\n  COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') AND EXTRACT(EPOCH FROM timestamp1 - timestamp0) < 10 THEN 1 END) AS non_missed\nFROM get_chat_frames($__timeFrom(), $__timeTo())",
+            "refId": "A"
+          }
+        ],
+        "thresholds": "",
+        "title": "10초 안에 취소된 요청",
+        "type": "singlestat",
+        "valueFontSize": "80%",
+        "valueMaps": [
+          {
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }
+        ],
+        "valueName": "avg"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": false,
+        "colors": [
+          "#299c46",
+          "rgba(237, 129, 40, 0.89)",
+          "#d44a3a"
+        ],
+        "datasource": "closer_event",
+        "format": "none",
+        "gauge": {
+          "maxValue": 100,
+          "minValue": 0,
+          "show": false,
+          "thresholdLabels": false,
+          "thresholdMarkers": true
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 12,
+          "y": 0
+        },
+        "id": 23,
+        "interval": null,
+        "links": [],
+        "mappingType": 1,
+        "mappingTypes": [
+          {
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [
+          {
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }
+        ],
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": false
+        },
+        "tableColumn": "all_connected",
+        "targets": [
+          {
+            "alias": "",
+            "format": "table",
+            "hide": false,
+            "rawSql": "SELECT\n  COUNT(CASE WHEN event1 = 'bot.conversation.agent_call_connected' THEN 1 END) AS all_connected\nFROM get_chat_frames($__timeFrom(), $__timeTo())",
+            "refId": "A"
+          }
+        ],
+        "thresholds": "",
+        "title": "상담 수행",
+        "type": "singlestat",
+        "valueFontSize": "80%",
+        "valueMaps": [
+          {
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }
+        ],
+        "valueName": "avg"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": false,
+        "colors": [
+          "#299c46",
+          "rgba(237, 129, 40, 0.89)",
+          "#d44a3a"
+        ],
+        "datasource": "closer_event",
+        "format": "none",
+        "gauge": {
+          "maxValue": 100,
+          "minValue": 0,
+          "show": false,
+          "thresholdLabels": false,
+          "thresholdMarkers": true
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 16,
+          "y": 0
+        },
+        "id": 25,
+        "interval": null,
+        "links": [],
+        "mappingType": 1,
+        "mappingTypes": [
+          {
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [
+          {
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }
+        ],
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": false
+        },
+        "tableColumn": "avg",
+        "targets": [
+          {
+            "alias": "",
+            "format": "table",
+            "hide": false,
+            "rawSql": "SELECT\n  AVG(EXTRACT(EPOCH FROM timestamp1) - EXTRACT(EPOCH FROM timestamp0))\nFROM get_chat_frames($__timeFrom(), $__timeTo())\nWHERE event1 = 'bot.conversation.agent_call_connected'",
+            "refId": "A"
+          }
+        ],
+        "thresholds": "",
+        "title": "평균 대기시간(초)",
+        "type": "singlestat",
+        "valueFontSize": "80%",
+        "valueMaps": [
+          {
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }
+        ],
+        "valueName": "avg"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": false,
+        "colors": [
+          "#299c46",
+          "rgba(237, 129, 40, 0.89)",
+          "#d44a3a"
+        ],
+        "datasource": "closer_event",
+        "format": "none",
+        "gauge": {
+          "maxValue": 100,
+          "minValue": 0,
+          "show": false,
+          "thresholdLabels": false,
+          "thresholdMarkers": true
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 20,
+          "y": 0
+        },
+        "id": 24,
+        "interval": null,
+        "links": [],
+        "mappingType": 1,
+        "mappingTypes": [
+          {
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [
+          {
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }
+        ],
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": false
+        },
+        "tableColumn": "percentile_disc",
+        "targets": [
+          {
+            "alias": "",
+            "format": "table",
+            "hide": false,
+            "rawSql": "SELECT\n  percentile_disc(0.9) WITHIN GROUP (ORDER BY diff)\nFROM (\n  SELECT\n    EXTRACT(EPOCH FROM timestamp1) - EXTRACT(EPOCH FROM timestamp0) AS diff\n  FROM get_chat_frames($__timeFrom(), $__timeTo())\n  WHERE event1 = 'bot.conversation.agent_call_connected'\n) AS d",
+            "refId": "A"
+          }
+        ],
+        "thresholds": "",
+        "title": "대기시간(초)(90%)",
+        "type": "singlestat",
+        "valueFontSize": "80%",
+        "valueMaps": [
+          {
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }
+        ],
+        "valueName": "avg"
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "closer_event",
+        "fill": 1,
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 4
+        },
+        "id": 8,
+        "legend": {
+          "alignAsTable": false,
+          "avg": false,
+          "current": false,
+          "hideEmpty": false,
+          "hideZero": false,
+          "max": false,
+          "min": false,
+          "rightSide": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null as zero",
+        "percentage": false,
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "alias": "",
+            "format": "time_series",
+            "hide": false,
+            "rawSql": "WITH fullfill AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', generate_series) AS time,\n    0 AS requested,\n    0 AS cancelled,\n    0 AS connected\n  FROM GENERATE_SERIES(\n    $__timeFrom(),\n    $__timeTo(),\n    '1 $GroupBy'\n  )\n),\nchat_results AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', timestamp0) AS time,\n    COUNT(*) AS requested,\n    COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') THEN 1 END) - COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') AND EXTRACT(EPOCH FROM timestamp1 - timestamp0) < 10 THEN 1 END) AS cancelled,\n    COUNT(CASE WHEN event1 = 'bot.conversation.agent_call_connected' THEN 1 END) AS connected\n  FROM get_chat_frames($__timeFrom(), $__timeTo())\n  GROUP BY time\n)\nSELECT\n  COALESCE(c.time, f.time) AS time,\n  COALESCE(c.requested, f.requested) AS \"상담 요청\",\n  COALESCE(c.cancelled, f.cancelled) AS \"취소된 요청\",\n  COALESCE(c.connected, f.connected) AS \"상담 수행\"\nFROM fullfill f\n  LEFT JOIN chat_results c ON f.time = c.time",
+            "refId": "A"
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeShift": null,
+        "title": "상담 요청/취소/수행",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "none",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": false
+          }
+        ]
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "closer_event",
+        "fill": 1,
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 12
+        },
+        "id": 15,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "percentage": false,
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [
+          {
+            "alias": "total",
+            "color": "#bf1b00"
+          }
+        ],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "alias": "",
+            "format": "time_series",
+            "rawSql": "WITH fullfill AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', generate_series) AS time,\n    0 AS requested,\n    0 AS cancelled,\n    0 AS connected\n  FROM GENERATE_SERIES(\n    $__timeFrom(),\n    $__timeTo(),\n    '1 $GroupBy'\n  )\n),\nchat_results AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', timestamp0) AS time,\n    COUNT(*) AS requested,\n    COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') AND EXTRACT(EPOCH FROM timestamp1 - timestamp0) < 10 THEN 1 END) AS non_missed,\n    COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') THEN 1 END) - COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') AND EXTRACT(EPOCH FROM timestamp1 - timestamp0) < 10 THEN 1 END) AS cancelled,\n    COUNT(CASE WHEN event1 = 'bot.conversation.agent_call_connected' THEN 1 END) AS connected\n  FROM get_chat_frames($__timeFrom(), $__timeTo())\n  GROUP BY time\n)\nSELECT\n  COALESCE(r.time, f.time) AS time,\n  -- CASE WHEN r.requested > 0 THEN (r.connected * 100) / r.requested ELSE 100 END AS \"응대율\",\n  CASE WHEN (r.requested - r.non_missed) > 0 THEN (r.connected * 100) / (r.requested - r.non_missed) ELSE 100 END AS \"응대율\"\nFROM fullfill f\n  LEFT JOIN chat_results r ON f.time = r.time",
+            "refId": "A"
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeShift": null,
+        "title": "응대율",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "percent",
+            "label": null,
+            "logBase": 1,
+            "max": "100",
+            "min": "0",
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": false
+          }
+        ]
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "closer_event",
+        "fill": 1,
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 20
+        },
+        "id": 14,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 2,
+        "links": [],
+        "nullPointMode": "null",
+        "percentage": false,
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "alias": "",
+            "format": "time_series",
+            "rawSql": "WITH fullfill AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', generate_series) AS time,\n    0 AS max,\n    0 AS min,\n    0 AS avg,\n    0 AS percentile\n  FROM GENERATE_SERIES(\n    $__timeFrom(),\n    $__timeTo(),\n    '1 $GroupBy'\n  )\n),\ntime_group AS (\n  SELECT\n    timestamp0,\n    EXTRACT(EPOCH FROM timestamp1 - timestamp0) AS diff\n  FROM get_chat_frames($__timeFrom(), $__timeTo())\n  WHERE event1 = 'bot.conversation.agent_call_connected'\n),\nresults AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', timestamp0) AS time,\n    MAX(diff) AS max,\n    MIN(diff) AS min,\n    AVG(diff) AS avg,\n    percentile_disc(0.9) WITHIN GROUP (ORDER BY diff) AS percentile\n  FROM time_group\n  GROUP BY time\n)\nSELECT\n  COALESCE(r.time, f.time) AS time,\n  COALESCE(r.max, f.max) AS \"최대\",\n  COALESCE(r.min, f.min) AS \"최소\",\n  COALESCE(r.avg, f.avg) AS \"평균\",\n  COALESCE(r.percentile, f.percentile) AS \"90%\"\nFROM fullfill f\n  LEFT JOIN results r ON f.time = r.time",
+            "refId": "B"
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeShift": null,
+        "title": "대기시간(초)",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "none",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          },
+          {
+            "format": "none",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": false
+          }
+        ]
+      }
+    ],
+    "refresh": false,
+    "schemaVersion": 16,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "allValue": null,
+          "current": {
+            "tags": [],
+            "text": "day",
+            "value": "day"
+          },
+          "hide": 0,
+          "includeAll": false,
+          "label": null,
+          "multi": false,
+          "name": "GroupBy",
+          "options": [
+            {
+              "selected": true,
+              "text": "day",
+              "value": "day"
+            },
+            {
+              "selected": false,
+              "text": "hour",
+              "value": "hour"
+            }
+          ],
+          "query": "day, hour",
+          "type": "custom"
+        },
+        {
+          "allValue": null,
+          "current": {
+            "isNone": true,
+            "text": "None",
+            "value": ""
+          },
+          "datasource": "closer_event",
+          "hide": 2,
+          "includeAll": false,
+          "label": null,
+          "multi": false,
+          "name": "get_chat_frames",
+          "options": [],
+          "query": "CREATE OR REPLACE FUNCTION get_chat_frames(_from TIMESTAMP WITH TIME ZONE, _to TIMESTAMP WITH TIME ZONE) RETURNS TABLE(conversation_id TEXT, event0 TEXT, event1 TEXT, event2 TEXT, event3 TEXT, status0 TEXT, status1 TEXT, status2 TEXT, status3 TEXT, timestamp0 TIMESTAMP WITHOUT TIME ZONE, timestamp1 TIMESTAMP WITHOUT TIME ZONE, timestamp2 TIMESTAMP WITHOUT TIME ZONE, timestamp3 TIMESTAMP WITHOUT TIME ZONE ) AS $BODY$ BEGIN RETURN QUERY SELECT c_id::TEXT, e0::TEXT, e1::TEXT, e2::TEXT, e3::TEXT, s0::TEXT, s1::TEXT, s2::TEXT, s3::TEXT, t0::TIMESTAMP WITHOUT TIME ZONE, t1::TIMESTAMP WITHOUT TIME ZONE, t2::TIMESTAMP WITHOUT TIME ZONE, t3::TIMESTAMP WITHOUT TIME ZONE FROM (SELECT c_id, LEAD(e, 0, NULL) OVER w AS e0, LEAD(e, 1, NULL) OVER w AS e1, LEAD(e, 2, NULL) OVER w AS e2, LEAD(e, 3, NULL) OVER w AS e3, LEAD(s, 0, NULL) OVER w AS s0, LEAD(s, 1, NULL) OVER w AS s1, LEAD(s, 2, NULL) OVER w AS s2, LEAD(s, 3, NULL) OVER w AS s3, LEAD(t, 0, NULL) OVER w AS t0, LEAD(t, 1, NULL) OVER w AS t1, LEAD(t, 2, NULL) OVER w AS t2, LEAD(t, 3, NULL) OVER w AS t3 FROM (SELECT * FROM (SELECT *, LAG(e, 1, null) OVER (PARTITION BY c_id ORDER BY t) AS prev FROM (SELECT event AS e, data#>>'{conversation, id}' AS c_id, data#>>'{conversation, context, manual, status}' AS s, timestamp AS t FROM events WHERE event IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_connected', 'bot.conversation.agent_call_disconnected', 'bot.conversation.agent_call_requested') AND timestamp BETWEEN _from AND _to )AS chat ) AS prev_filter WHERE prev IS NULL OR prev != e) AS filtered WINDOW w AS (PARTITION BY c_id ORDER BY t) ) AS frames WHERE e0 = 'bot.conversation.agent_call_requested' AND (s0 IS NULL OR s0 != 'HANDOVER'); END $BODY$ LANGUAGE plpgsql;",
+          "refresh": 1,
+          "regex": "",
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tags": [],
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        }
+      ]
+    },
+    "time": {
+      "from": "now-7d",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ]
+    },
+    "timezone": "",
+    "title": "Sample Chat Dashboard",
+    "uid": "closer-chat",
+    "version": 1
+  }
