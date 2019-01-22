@@ -22,7 +22,7 @@ This project is an easy-to-install web dashboard which collects and visualizes e
 1.  Clone this repository:
 
     ```sh
-    $ git clone https://github.com/sinicompany/closer-event-dashboard.git
+    $ git clone https://github.com/sini-company/closer-event-dashboard.git
     ```
 
 2.  Run docker-compose to run http server (`-d`: run in daemon mode)
