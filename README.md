@@ -39,3 +39,9 @@ This project is an easy-to-install web dashboard which collects and visualizes e
 4.  Register your webhook endpoint to the CLOSER Bot Settings > Webhook
 
     ![Instruction](/instruction.png?raw=true 'Instruction')
+
+5.  Customize your dashboard
+
+    - See included samples: [grafana/dashboards](/grafana/dashboards)
+    - Grafana tutorial: http://docs.grafana.org/guides/getting_started/
+
