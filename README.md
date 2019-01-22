@@ -9,8 +9,8 @@ This project is an easy-to-install web dashboard which collects and visualizes e
 ### Components
 
 - [Nginx](https://nginx.org/): HTTP and reverse proxy server
-- [PostgreSQL](https://www.postgresql.org/): Relational database that supports arbitary JSON column
-- [Grafana](https://grafana.com/): Data visualization tool
+- [PostgreSQL](https://www.postgresql.org/): Relational database that supports arbitrary JSON column
+- [Grafana](https://grafana.com/): Metric analytics & monitoring tool
 
 ### Prerequisites
 
