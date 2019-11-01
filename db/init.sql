@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS events (
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL
 );
 CREATE INDEX events_event_source_id ON events (event, source_id);
+CREATE INDEX events_timestamp ON events (timestamp);
 
 -- Create user role
 CREATE ROLE readonly_role;
