@@ -2,7 +2,7 @@
   "annotations": {
     "list": [
       {
-        "$$hashKey": "object:319",
+        "$$hashKey": "object:544",
         "builtIn": 1,
         "datasource": "-- Grafana --",
         "enable": true,
@@ -17,14 +17,18 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1548034687149,
+  "iteration": 1572595606528,
   "links": [],
   "panels": [
     {
       "cacheTimeout": null,
       "colorBackground": false,
       "colorValue": false,
-      "colors": ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
       "datasource": "closer_event",
       "format": "none",
       "gauge": {
@@ -100,7 +104,11 @@
       "cacheTimeout": null,
       "colorBackground": false,
       "colorValue": false,
-      "colors": ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
       "datasource": "closer_event",
       "format": "none",
       "gauge": {
@@ -176,7 +184,11 @@
       "cacheTimeout": null,
       "colorBackground": false,
       "colorValue": false,
-      "colors": ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
       "datasource": "closer_event",
       "format": "none",
       "gauge": {
@@ -252,7 +264,11 @@
       "cacheTimeout": null,
       "colorBackground": false,
       "colorValue": false,
-      "colors": ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
       "datasource": "closer_event",
       "format": "none",
       "gauge": {
@@ -328,7 +344,11 @@
       "cacheTimeout": null,
       "colorBackground": false,
       "colorValue": false,
-      "colors": ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
       "datasource": "closer_event",
       "format": "none",
       "gauge": {
@@ -404,7 +424,11 @@
       "cacheTimeout": null,
       "colorBackground": false,
       "colorValue": false,
-      "colors": ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
       "datasource": "closer_event",
       "format": "none",
       "gauge": {
@@ -602,10 +626,11 @@
       "steppedLine": false,
       "targets": [
         {
+          "$$hashKey": "object:673",
           "alias": "",
           "format": "time_series",
           "hide": false,
-          "rawSql": "WITH fullfill AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', generate_series) AS time,\n    0 AS cumulative,\n    0 AS new,\n    0 AS active\n  FROM GENERATE_SERIES(\n    $__timeFrom(),\n    $__timeTo(),\n    '1 $GroupBy'\n  )\n),\nresults AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', timestamp) AS time,\n    SUM(COUNT(DISTINCT CASE WHEN event IN ('bot.end_user.created', 'bot.end_user.updated') THEN data#>>'{endUser, id}' END)) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumulative,\n    COUNT(DISTINCT CASE WHEN event = 'bot.end_user.created' THEN data#>>'{endUser, id}' END) AS new,\n    COUNT(DISTINCT CASE \n        WHEN event = 'bot.message.received' THEN data#>>'{message, endUserId}'\n        WHEN event = 'bot.end_user.created' THEN data#>>'{endUser, id}'\n      END) AS active\n  FROM\n    events\n  WHERE\n    $__timeFilter(timestamp)\n    AND event IN ('bot.end_user.created', 'bot.end_user.updated', 'bot.message.received')\n  GROUP BY time\n)\nSELECT\n  COALESCE(r.time, f.time) AS time,\n  COALESCE(r.cumulative, f.cumulative) AS \"기간내 누적 사용자\",\n  COALESCE(r.new, f.new) AS \"신규 사용자\",\n  COALESCE(r.active, f.active) AS \"활성 사용자\"\nFROM fullfill f\n  LEFT JOIN results r ON f.time = r.time\n",
+          "rawSql": "WITH fullfill AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', generate_series) AS time,\n    0 AS cumulative,\n    0 AS new,\n    0 AS active\n  FROM GENERATE_SERIES(\n    $__timeFrom()::DATE,\n    $__timeTo()::DATE,\n    '1 $GroupBy'\n  )\n),\nresults AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', timestamp) AS time,\n    SUM(COUNT(DISTINCT CASE WHEN event IN ('bot.end_user.created', 'bot.end_user.updated') THEN data#>>'{endUser, id}' END)) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumulative,\n    COUNT(DISTINCT CASE WHEN event = 'bot.end_user.created' THEN data#>>'{endUser, id}' END) AS new,\n    COUNT(DISTINCT CASE \n        WHEN event = 'bot.message.received' THEN data#>>'{message, endUserId}'\n        WHEN event = 'bot.end_user.created' THEN data#>>'{endUser, id}'\n      END) AS active\n  FROM\n    events\n  WHERE\n    $__timeFilter(timestamp)\n    AND event IN ('bot.end_user.created', 'bot.end_user.updated', 'bot.message.received')\n  GROUP BY time\n)\nSELECT\n  COALESCE(r.time, f.time) AS time,\n  COALESCE(r.cumulative, f.cumulative) AS \"기간내 누적 사용자\",\n  COALESCE(r.new, f.new) AS \"신규 사용자\",\n  COALESCE(r.active, f.active) AS \"활성 사용자\"\nFROM fullfill f\n  LEFT JOIN results r ON f.time = r.time\n",
           "refId": "B"
         }
       ],
@@ -689,7 +714,7 @@
         {
           "alias": "",
           "format": "time_series",
-          "rawSql": "WITH fullfill AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', generate_series) AS time,\n    0 AS user_message,\n    0 AS bot_message,\n    0 AS agent_message\n  FROM GENERATE_SERIES(\n    $__timeFrom(),\n    $__timeTo(),\n    '1 $GroupBy'\n  )\n),\nresults AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', timestamp) AS time,\n    COUNT(CASE WHEN event = 'bot.message.received' THEN 1 END) AS user_message,\n    COUNT(CASE WHEN event = 'bot.message.sent' AND data#>>'{message, meta, persona}' IS NULL THEN 1 END) AS bot_message,\n    COUNT(CASE WHEN event = 'bot.message.sent' AND data#>>'{message, meta, persona}' IS NOT NULL THEN 1 END) AS agent_message\n  FROM\n    events\n  WHERE\n    $__timeFilter(timestamp)\n    AND event IN ('bot.message.received', 'bot.message.sent')\n  GROUP BY time\n)\nSELECT\n  COALESCE(r.time, f.time) AS time,\n  COALESCE(r.user_message, f.user_message) AS \"사용자 메시지\",\n  COALESCE(r.bot_message, f.bot_message) AS \"봇 메시지\",\n  COALESCE(r.agent_message, f.agent_message) AS \"상담원 메시지\"\nFROM fullfill f\n  LEFT JOIN results r ON f.time = r.time\n",
+          "rawSql": "WITH fullfill AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', generate_series) AS time,\n    0 AS user_message,\n    0 AS bot_message,\n    0 AS agent_message\n  FROM GENERATE_SERIES(\n    $__timeFrom()::DATE,\n    $__timeTo()::DATE,\n    '1 $GroupBy'\n  )\n),\nresults AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', timestamp) AS time,\n    COUNT(CASE WHEN event = 'bot.message.received' THEN 1 END) AS user_message,\n    COUNT(CASE WHEN event = 'bot.message.sent' AND data#>>'{message, meta, persona}' IS NULL THEN 1 END) AS bot_message,\n    COUNT(CASE WHEN event = 'bot.message.sent' AND data#>>'{message, meta, persona}' IS NOT NULL THEN 1 END) AS agent_message\n  FROM\n    events\n  WHERE\n    $__timeFilter(timestamp)\n    AND event IN ('bot.message.received', 'bot.message.sent')\n  GROUP BY time\n)\nSELECT\n  COALESCE(r.time, f.time) AS time,\n  COALESCE(r.user_message, f.user_message) AS \"사용자 메시지\",\n  COALESCE(r.bot_message, f.bot_message) AS \"봇 메시지\",\n  COALESCE(r.agent_message, f.agent_message) AS \"상담원 메시지\"\nFROM fullfill f\n  LEFT JOIN results r ON f.time = r.time\n",
           "refId": "A"
         }
       ],
@@ -728,6 +753,62 @@
           "show": true
         }
       ]
+    },
+    {
+      "columns": [],
+      "datasource": "closer_event",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "id": 20,
+      "links": [],
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "$$hashKey": "object:736",
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "$$hashKey": "object:737",
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 0,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "none"
+        }
+      ],
+      "targets": [
+        {
+          "$$hashKey": "object:630",
+          "alias": "",
+          "format": "table",
+          "rawSql": "SELECT\n  data#>>'{message, id}' AS id,\n  data#>>'{message, endUserId}' AS end_user_id,\n  data#>>'{message, conversationId}' AS conversation_id,\n  CASE\n    WHEN data#>>'{message, isUser}' = 'true' THEN 'user'\n    WHEN data#>>'{message, isUser}' = 'false' AND data#>>'{message, persona}' IS NOT NULL THEN 'agent'\n    ELSE 'bot'\n  END AS message_type,\n  data#>'{message, data}' AS data,\n  CAST(data#>>'{message, timestamp}' AS BIGINT) AS timestamp\nFROM events\nWHERE\n  event IN ('bot.message.sent', 'bot.message.received')\n  AND $__timeFilter(events.timestamp)\nORDER BY timestamp DESC",
+          "refId": "A"
+        }
+      ],
+      "title": "메시지",
+      "transform": "timeseries_to_columns",
+      "type": "table"
     }
   ],
   "refresh": false,
@@ -770,8 +851,29 @@
     "to": "now"
   },
   "timepicker": {
-    "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"],
-    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
   },
   "timezone": "",
   "title": "Sample Bot Dashboard",

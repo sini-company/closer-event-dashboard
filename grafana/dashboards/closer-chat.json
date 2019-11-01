@@ -84,7 +84,7 @@
             "alias": "",
             "format": "table",
             "hide": false,
-            "rawSql": "SELECT COUNT(*)\nFROM get_chat_frames($__timeFrom(), $__timeTo())",
+            "rawSql": "SELECT COUNT(*)\nFROM get_chat_frames($__timeFrom()::DATE, $__timeTo()::DATE)",
             "refId": "A"
           }
         ],
@@ -165,7 +165,7 @@
             "alias": "",
             "format": "table",
             "hide": false,
-            "rawSql": "SELECT\n  COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') THEN 1 END) AS all_missed\nFROM get_chat_frames($__timeFrom(), $__timeTo())",
+            "rawSql": "SELECT\n  COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') THEN 1 END) AS all_missed\nFROM get_chat_frames($__timeFrom()::DATE, $__timeTo()::DATE)",
             "refId": "A"
           }
         ],
@@ -246,7 +246,7 @@
             "alias": "",
             "format": "table",
             "hide": false,
-            "rawSql": "SELECT\n  COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') AND EXTRACT(EPOCH FROM timestamp1 - timestamp0) < 10 THEN 1 END) AS non_missed\nFROM get_chat_frames($__timeFrom(), $__timeTo())",
+            "rawSql": "SELECT\n  COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') AND EXTRACT(EPOCH FROM timestamp1 - timestamp0) < 10 THEN 1 END) AS non_missed\nFROM get_chat_frames($__timeFrom()::DATE, $__timeTo()::DATE)",
             "refId": "A"
           }
         ],
@@ -327,7 +327,7 @@
             "alias": "",
             "format": "table",
             "hide": false,
-            "rawSql": "SELECT\n  COUNT(CASE WHEN event1 = 'bot.conversation.agent_call_connected' THEN 1 END) AS all_connected\nFROM get_chat_frames($__timeFrom(), $__timeTo())",
+            "rawSql": "SELECT\n  COUNT(CASE WHEN event1 = 'bot.conversation.agent_call_connected' THEN 1 END) AS all_connected\nFROM get_chat_frames($__timeFrom()::DATE, $__timeTo()::DATE)",
             "refId": "A"
           }
         ],
@@ -408,7 +408,7 @@
             "alias": "",
             "format": "table",
             "hide": false,
-            "rawSql": "SELECT\n  AVG(EXTRACT(EPOCH FROM timestamp1) - EXTRACT(EPOCH FROM timestamp0))\nFROM get_chat_frames($__timeFrom(), $__timeTo())\nWHERE event1 = 'bot.conversation.agent_call_connected'",
+            "rawSql": "SELECT\n  AVG(EXTRACT(EPOCH FROM timestamp1) - EXTRACT(EPOCH FROM timestamp0))\nFROM get_chat_frames($__timeFrom()::DATE, $__timeTo()::DATE)\nWHERE event1 = 'bot.conversation.agent_call_connected'",
             "refId": "A"
           }
         ],
@@ -489,7 +489,7 @@
             "alias": "",
             "format": "table",
             "hide": false,
-            "rawSql": "SELECT\n  percentile_disc(0.9) WITHIN GROUP (ORDER BY diff)\nFROM (\n  SELECT\n    EXTRACT(EPOCH FROM timestamp1) - EXTRACT(EPOCH FROM timestamp0) AS diff\n  FROM get_chat_frames($__timeFrom(), $__timeTo())\n  WHERE event1 = 'bot.conversation.agent_call_connected'\n) AS d",
+            "rawSql": "SELECT\n  percentile_disc(0.9) WITHIN GROUP (ORDER BY diff)\nFROM (\n  SELECT\n    EXTRACT(EPOCH FROM timestamp1) - EXTRACT(EPOCH FROM timestamp0) AS diff\n  FROM get_chat_frames($__timeFrom()::DATE, $__timeTo()::DATE)\n  WHERE event1 = 'bot.conversation.agent_call_connected'\n) AS d",
             "refId": "A"
           }
         ],
@@ -550,7 +550,7 @@
             "alias": "",
             "format": "time_series",
             "hide": false,
-            "rawSql": "WITH fullfill AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', generate_series) AS time,\n    0 AS requested,\n    0 AS cancelled,\n    0 AS connected\n  FROM GENERATE_SERIES(\n    $__timeFrom(),\n    $__timeTo(),\n    '1 $GroupBy'\n  )\n),\nchat_results AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', timestamp0) AS time,\n    COUNT(*) AS requested,\n    COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') THEN 1 END) - COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') AND EXTRACT(EPOCH FROM timestamp1 - timestamp0) < 10 THEN 1 END) AS cancelled,\n    COUNT(CASE WHEN event1 = 'bot.conversation.agent_call_connected' THEN 1 END) AS connected\n  FROM get_chat_frames($__timeFrom(), $__timeTo())\n  GROUP BY time\n)\nSELECT\n  COALESCE(c.time, f.time) AS time,\n  COALESCE(c.requested, f.requested) AS \"상담 요청\",\n  COALESCE(c.cancelled, f.cancelled) AS \"취소된 요청\",\n  COALESCE(c.connected, f.connected) AS \"상담 수행\"\nFROM fullfill f\n  LEFT JOIN chat_results c ON f.time = c.time",
+            "rawSql": "WITH fullfill AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', generate_series) AS time,\n    0 AS requested,\n    0 AS cancelled,\n    0 AS connected\n  FROM GENERATE_SERIES(\n    $__timeFrom()::DATE,\n    $__timeTo()::DATE,\n    '1 $GroupBy'\n  )\n),\nchat_results AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', timestamp0) AS time,\n    COUNT(*) AS requested,\n    COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') THEN 1 END) - COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') AND EXTRACT(EPOCH FROM timestamp1 - timestamp0) < 10 THEN 1 END) AS cancelled,\n    COUNT(CASE WHEN event1 = 'bot.conversation.agent_call_connected' THEN 1 END) AS connected\n  FROM get_chat_frames($__timeFrom()::DATE, $__timeTo()::DATE)\n  GROUP BY time\n)\nSELECT\n  COALESCE(c.time, f.time) AS time,\n  COALESCE(c.requested, f.requested) AS \"상담 요청\",\n  COALESCE(c.cancelled, f.cancelled) AS \"취소된 요청\",\n  COALESCE(c.connected, f.connected) AS \"상담 수행\"\nFROM fullfill f\n  LEFT JOIN chat_results c ON f.time = c.time",
             "refId": "A"
           }
         ],
@@ -634,7 +634,7 @@
           {
             "alias": "",
             "format": "time_series",
-            "rawSql": "WITH fullfill AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', generate_series) AS time,\n    0 AS requested,\n    0 AS cancelled,\n    0 AS connected\n  FROM GENERATE_SERIES(\n    $__timeFrom(),\n    $__timeTo(),\n    '1 $GroupBy'\n  )\n),\nchat_results AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', timestamp0) AS time,\n    COUNT(*) AS requested,\n    COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') AND EXTRACT(EPOCH FROM timestamp1 - timestamp0) < 10 THEN 1 END) AS non_missed,\n    COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') THEN 1 END) - COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') AND EXTRACT(EPOCH FROM timestamp1 - timestamp0) < 10 THEN 1 END) AS cancelled,\n    COUNT(CASE WHEN event1 = 'bot.conversation.agent_call_connected' THEN 1 END) AS connected\n  FROM get_chat_frames($__timeFrom(), $__timeTo())\n  GROUP BY time\n)\nSELECT\n  COALESCE(r.time, f.time) AS time,\n  -- CASE WHEN r.requested > 0 THEN (r.connected * 100) / r.requested ELSE 100 END AS \"응대율\",\n  CASE WHEN (r.requested - r.non_missed) > 0 THEN (r.connected * 100) / (r.requested - r.non_missed) ELSE 100 END AS \"응대율\"\nFROM fullfill f\n  LEFT JOIN chat_results r ON f.time = r.time",
+            "rawSql": "WITH fullfill AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', generate_series) AS time,\n    0 AS requested,\n    0 AS cancelled,\n    0 AS connected\n  FROM GENERATE_SERIES(\n    $__timeFrom()::DATE,\n    $__timeTo()::DATE,\n    '1 $GroupBy'\n  )\n),\nchat_results AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', timestamp0) AS time,\n    COUNT(*) AS requested,\n    COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') AND EXTRACT(EPOCH FROM timestamp1 - timestamp0) < 10 THEN 1 END) AS non_missed,\n    COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') THEN 1 END) - COUNT(CASE WHEN event1 IN ('bot.conversation.agent_call_cancelled', 'bot.conversation.agent_call_disconnected') AND EXTRACT(EPOCH FROM timestamp1 - timestamp0) < 10 THEN 1 END) AS cancelled,\n    COUNT(CASE WHEN event1 = 'bot.conversation.agent_call_connected' THEN 1 END) AS connected\n  FROM get_chat_frames($__timeFrom()::DATE, $__timeTo()::DATE)\n  GROUP BY time\n)\nSELECT\n  COALESCE(r.time, f.time) AS time,\n  -- CASE WHEN r.requested > 0 THEN (r.connected * 100) / r.requested ELSE 100 END AS \"응대율\",\n  CASE WHEN (r.requested - r.non_missed) > 0 THEN (r.connected * 100) / (r.requested - r.non_missed) ELSE 100 END AS \"응대율\"\nFROM fullfill f\n  LEFT JOIN chat_results r ON f.time = r.time",
             "refId": "A"
           }
         ],
@@ -713,7 +713,7 @@
           {
             "alias": "",
             "format": "time_series",
-            "rawSql": "WITH fullfill AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', generate_series) AS time,\n    0 AS max,\n    0 AS min,\n    0 AS avg,\n    0 AS percentile\n  FROM GENERATE_SERIES(\n    $__timeFrom(),\n    $__timeTo(),\n    '1 $GroupBy'\n  )\n),\ntime_group AS (\n  SELECT\n    timestamp0,\n    EXTRACT(EPOCH FROM timestamp1 - timestamp0) AS diff\n  FROM get_chat_frames($__timeFrom(), $__timeTo())\n  WHERE event1 = 'bot.conversation.agent_call_connected'\n),\nresults AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', timestamp0) AS time,\n    MAX(diff) AS max,\n    MIN(diff) AS min,\n    AVG(diff) AS avg,\n    percentile_disc(0.9) WITHIN GROUP (ORDER BY diff) AS percentile\n  FROM time_group\n  GROUP BY time\n)\nSELECT\n  COALESCE(r.time, f.time) AS time,\n  COALESCE(r.max, f.max) AS \"최대\",\n  COALESCE(r.min, f.min) AS \"최소\",\n  COALESCE(r.avg, f.avg) AS \"평균\",\n  COALESCE(r.percentile, f.percentile) AS \"90%\"\nFROM fullfill f\n  LEFT JOIN results r ON f.time = r.time",
+            "rawSql": "WITH fullfill AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', generate_series) AS time,\n    0 AS max,\n    0 AS min,\n    0 AS avg,\n    0 AS percentile\n  FROM GENERATE_SERIES(\n    $__timeFrom()::DATE,\n    $__timeTo()::DATE,\n    '1 $GroupBy'\n  )\n),\ntime_group AS (\n  SELECT\n    timestamp0,\n    EXTRACT(EPOCH FROM timestamp1 - timestamp0) AS diff\n  FROM get_chat_frames($__timeFrom()::DATE, $__timeTo()::DATE)\n  WHERE event1 = 'bot.conversation.agent_call_connected'\n),\nresults AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', timestamp0) AS time,\n    MAX(diff) AS max,\n    MIN(diff) AS min,\n    AVG(diff) AS avg,\n    percentile_disc(0.9) WITHIN GROUP (ORDER BY diff) AS percentile\n  FROM time_group\n  GROUP BY time\n)\nSELECT\n  COALESCE(r.time, f.time) AS time,\n  COALESCE(r.max, f.max) AS \"최대\",\n  COALESCE(r.min, f.min) AS \"최소\",\n  COALESCE(r.avg, f.avg) AS \"평균\",\n  COALESCE(r.percentile, f.percentile) AS \"90%\"\nFROM fullfill f\n  LEFT JOIN results r ON f.time = r.time",
             "refId": "B"
           }
         ],
