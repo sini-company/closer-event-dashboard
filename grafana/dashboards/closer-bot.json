@@ -615,7 +615,7 @@
       "lines": true,
       "linewidth": 2,
       "links": [],
-      "nullPointMode": "null",
+      "nullPointMode": "connected",
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -630,7 +630,7 @@
           "alias": "",
           "format": "time_series",
           "hide": false,
-          "rawSql": "WITH fullfill AS (\n  SELECT\n    TIMESTAMPTZ_TRUNC('$GroupBy', generate_series, 'Asia/Seoul') AS time,\n    0 AS cumulative,\n    0 AS new,\n    0 AS active\n  FROM GENERATE_SERIES(\n    $__timeFrom()::TIMESTAMPTZ,\n    $__timeTo()::TIMESTAMPTZ,\n    '1 $GroupBy'\n  )\n),\nresults AS (\n  SELECT\n    TIMESTAMPTZ_TRUNC('$GroupBy', timestamp, 'Asia/Seoul') AS time,\n    SUM(COUNT(DISTINCT CASE WHEN event IN ('bot.end_user.created', 'bot.end_user.updated') THEN data#>>'{endUser, id}' END)) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumulative,\n    COUNT(DISTINCT CASE WHEN event = 'bot.end_user.created' THEN data#>>'{endUser, id}' END) AS new,\n    COUNT(DISTINCT CASE \n        WHEN event = 'bot.message.received' THEN data#>>'{message, endUserId}'\n        WHEN event = 'bot.end_user.created' THEN data#>>'{endUser, id}'\n      END) AS active\n  FROM\n    events\n  WHERE\n    $__timeFilter(timestamp)\n    AND event IN ('bot.end_user.created', 'bot.end_user.updated', 'bot.message.received')\n  GROUP BY time\n)\nSELECT\n  COALESCE(r.time, f.time) AS time,\n  COALESCE(r.cumulative, f.cumulative) AS \"기간내 누적 사용자\",\n  COALESCE(r.new, f.new) AS \"신규 사용자\",\n  COALESCE(r.active, f.active) AS \"활성 사용자\"\nFROM fullfill f\n  LEFT JOIN results r ON f.time = r.time\n",
+          "rawSql": "WITH fullfill AS (\n  SELECT\n    TIMESTAMPTZ_TRUNC('$GroupBy', generate_series, 'Asia/Seoul') AS time,\n    0 AS cumulative,\n    0 AS new,\n    0 AS active\n  FROM GENERATE_SERIES(\n    $__timeFrom()::TIMESTAMPTZ,\n    $__timeTo()::TIMESTAMPTZ,\n    '1 $GroupBy'\n  )\n),\nresults AS (\n  SELECT\n    TIMESTAMPTZ_TRUNC('$GroupBy', timestamp, 'Asia/Seoul') AS time,\n    SUM(COUNT(DISTINCT CASE WHEN event IN ('bot.end_user.created', 'bot.end_user.updated') THEN data#>>'{endUser, id}' END)) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumulative,\n    COUNT(DISTINCT CASE WHEN event = 'bot.end_user.created' THEN data#>>'{endUser, id}' END) AS new,\n    COUNT(DISTINCT CASE \n        WHEN event = 'bot.message.received' THEN data#>>'{message, endUserId}'\n        WHEN event = 'bot.end_user.created' THEN data#>>'{endUser, id}'\n      END) AS active\n  FROM\n    events\n  WHERE\n    $__timeFilter(timestamp)\n    AND event IN ('bot.end_user.created', 'bot.end_user.updated', 'bot.message.received')\n  GROUP BY time\n)\nSELECT\n  COALESCE(r.time, f.time) AS time,\n  r.cumulative AS \"기간내 누적 사용자\",\n  COALESCE(r.new, f.new) AS \"신규 사용자\",\n  COALESCE(r.active, f.active) AS \"활성 사용자\"\nFROM fullfill f\n  LEFT JOIN results r ON f.time = r.time\n",
           "refId": "B"
         }
       ],
