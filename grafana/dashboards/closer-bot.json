@@ -770,19 +770,17 @@
       "scroll": true,
       "showHeader": true,
       "sort": {
-        "col": 0,
+        "col": 5,
         "desc": true
       },
       "styles": [
         {
-          "$$hashKey": "object:736",
-          "alias": "Time",
+          "alias": "timestamp",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Time",
+          "pattern": "timestamp",
           "type": "date"
         },
         {
-          "$$hashKey": "object:737",
           "alias": "",
           "colorMode": null,
           "colors": [
@@ -799,7 +797,6 @@
       ],
       "targets": [
         {
-          "$$hashKey": "object:630",
           "alias": "",
           "format": "table",
           "rawSql": "SELECT\n  data#>>'{message, id}' AS id,\n  data#>>'{message, endUserId}' AS end_user_id,\n  data#>>'{message, conversationId}' AS conversation_id,\n  CASE\n    WHEN data#>>'{message, isUser}' = 'true' THEN 'user'\n    WHEN data#>>'{message, isUser}' = 'false' AND data#>>'{message, persona}' IS NOT NULL THEN 'agent'\n    ELSE 'bot'\n  END AS message_type,\n  data#>'{message, data}' AS data,\n  CAST(data#>>'{message, timestamp}' AS BIGINT) AS timestamp\nFROM events\nWHERE\n  event IN ('bot.message.sent', 'bot.message.received')\n  AND $__timeFilter(events.timestamp)\nORDER BY timestamp DESC",
