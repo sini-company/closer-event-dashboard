@@ -549,7 +549,7 @@
           "alias": "",
           "format": "time_series",
           "hide": false,
-          "rawSql": "SELECT\n  DATE_TRUNC('$GroupBy', timestamp) AS time,\n  event,\n  COUNT(*) AS count\nFROM events\nWHERE\n  $__timeFilter(timestamp)\nGROUP BY time, event\n\nUNION ALL\n\nSELECT\n  DATE_TRUNC('$GroupBy', timestamp) AS time,\n  'total' AS event,\n  COUNT(*) AS count\nFROM events\nWHERE\n  $__timeFilter(timestamp)\nGROUP BY time",
+          "rawSql": "SELECT\n  TIMESTAMPTZ_TRUNC('$GroupBy', timestamp, 'Asia/Seoul') AS time,\n  event,\n  COUNT(*) AS count\nFROM events\nWHERE\n  $__timeFilter(timestamp)\nGROUP BY time, event\n\nUNION ALL\n\nSELECT\n  TIMESTAMPTZ_TRUNC('$GroupBy', timestamp, 'Asia/Seoul') AS time,\n  'total' AS event,\n  COUNT(*) AS count\nFROM events\nWHERE\n  $__timeFilter(timestamp)\nGROUP BY time ORDER BY time",
           "refId": "A"
         }
       ],
@@ -615,7 +615,7 @@
       "lines": true,
       "linewidth": 2,
       "links": [],
-      "nullPointMode": "null",
+      "nullPointMode": "connected",
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -630,7 +630,7 @@
           "alias": "",
           "format": "time_series",
           "hide": false,
-          "rawSql": "WITH fullfill AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', generate_series) AS time,\n    0 AS cumulative,\n    0 AS new,\n    0 AS active\n  FROM GENERATE_SERIES(\n    $__timeFrom()::DATE,\n    $__timeTo()::DATE,\n    '1 $GroupBy'\n  )\n),\nresults AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', timestamp) AS time,\n    SUM(COUNT(DISTINCT CASE WHEN event IN ('bot.end_user.created', 'bot.end_user.updated') THEN data#>>'{endUser, id}' END)) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumulative,\n    COUNT(DISTINCT CASE WHEN event = 'bot.end_user.created' THEN data#>>'{endUser, id}' END) AS new,\n    COUNT(DISTINCT CASE \n        WHEN event = 'bot.message.received' THEN data#>>'{message, endUserId}'\n        WHEN event = 'bot.end_user.created' THEN data#>>'{endUser, id}'\n      END) AS active\n  FROM\n    events\n  WHERE\n    $__timeFilter(timestamp)\n    AND event IN ('bot.end_user.created', 'bot.end_user.updated', 'bot.message.received')\n  GROUP BY time\n)\nSELECT\n  COALESCE(r.time, f.time) AS time,\n  COALESCE(r.cumulative, f.cumulative) AS \"기간내 누적 사용자\",\n  COALESCE(r.new, f.new) AS \"신규 사용자\",\n  COALESCE(r.active, f.active) AS \"활성 사용자\"\nFROM fullfill f\n  LEFT JOIN results r ON f.time = r.time\n",
+          "rawSql": "WITH fullfill AS (\n  SELECT\n    TIMESTAMPTZ_TRUNC('$GroupBy', generate_series, 'Asia/Seoul') AS time,\n    0 AS cumulative,\n    0 AS new,\n    0 AS active\n  FROM GENERATE_SERIES(\n    $__timeFrom()::TIMESTAMPTZ,\n    $__timeTo()::TIMESTAMPTZ,\n    '1 $GroupBy'\n  )\n),\nresults AS (\n  SELECT\n    TIMESTAMPTZ_TRUNC('$GroupBy', timestamp, 'Asia/Seoul') AS time,\n    SUM(COUNT(DISTINCT CASE WHEN event IN ('bot.end_user.created', 'bot.end_user.updated') THEN data#>>'{endUser, id}' END)) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumulative,\n    COUNT(DISTINCT CASE WHEN event = 'bot.end_user.created' THEN data#>>'{endUser, id}' END) AS new,\n    COUNT(DISTINCT CASE \n        WHEN event = 'bot.message.received' THEN data#>>'{message, endUserId}'\n        WHEN event = 'bot.end_user.created' THEN data#>>'{endUser, id}'\n      END) AS active\n  FROM\n    events\n  WHERE\n    $__timeFilter(timestamp)\n    AND event IN ('bot.end_user.created', 'bot.end_user.updated', 'bot.message.received')\n  GROUP BY time\n)\nSELECT\n  COALESCE(r.time, f.time) AS time,\n  r.cumulative AS \"기간내 누적 사용자\",\n  COALESCE(r.new, f.new) AS \"신규 사용자\",\n  COALESCE(r.active, f.active) AS \"활성 사용자\"\nFROM fullfill f\n  LEFT JOIN results r ON f.time = r.time\n",
           "refId": "B"
         }
       ],
@@ -714,7 +714,7 @@
         {
           "alias": "",
           "format": "time_series",
-          "rawSql": "WITH fullfill AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', generate_series) AS time,\n    0 AS user_message,\n    0 AS bot_message,\n    0 AS agent_message\n  FROM GENERATE_SERIES(\n    $__timeFrom()::DATE,\n    $__timeTo()::DATE,\n    '1 $GroupBy'\n  )\n),\nresults AS (\n  SELECT\n    DATE_TRUNC('$GroupBy', timestamp) AS time,\n    COUNT(CASE WHEN event = 'bot.message.received' THEN 1 END) AS user_message,\n    COUNT(CASE WHEN event = 'bot.message.sent' AND data#>>'{message, meta, persona}' IS NULL THEN 1 END) AS bot_message,\n    COUNT(CASE WHEN event = 'bot.message.sent' AND data#>>'{message, meta, persona}' IS NOT NULL THEN 1 END) AS agent_message\n  FROM\n    events\n  WHERE\n    $__timeFilter(timestamp)\n    AND event IN ('bot.message.received', 'bot.message.sent')\n  GROUP BY time\n)\nSELECT\n  COALESCE(r.time, f.time) AS time,\n  COALESCE(r.user_message, f.user_message) AS \"사용자 메시지\",\n  COALESCE(r.bot_message, f.bot_message) AS \"봇 메시지\",\n  COALESCE(r.agent_message, f.agent_message) AS \"상담원 메시지\"\nFROM fullfill f\n  LEFT JOIN results r ON f.time = r.time\n",
+          "rawSql": "WITH fullfill AS (\n  SELECT\n    TIMESTAMPTZ_TRUNC('$GroupBy', generate_series, 'Asia/Seoul') AS time,\n    0 AS user_message,\n    0 AS bot_message,\n    0 AS agent_message\n  FROM GENERATE_SERIES(\n    $__timeFrom()::TIMESTAMPTZ,\n    $__timeTo()::TIMESTAMPTZ,\n    '1 $GroupBy'\n  )\n),\nresults AS (\n  SELECT\n    TIMESTAMPTZ_TRUNC('$GroupBy', timestamp, 'Asia/Seoul') AS time,\n    COUNT(CASE WHEN event = 'bot.message.received' THEN 1 END) AS user_message,\n    COUNT(CASE WHEN event = 'bot.message.sent' AND data#>>'{message, meta, persona}' IS NULL THEN 1 END) AS bot_message,\n    COUNT(CASE WHEN event = 'bot.message.sent' AND data#>>'{message, meta, persona}' IS NOT NULL THEN 1 END) AS agent_message\n  FROM\n    events\n  WHERE\n    $__timeFilter(timestamp)\n    AND event IN ('bot.message.received', 'bot.message.sent')\n  GROUP BY time\n)\nSELECT\n  COALESCE(r.time, f.time) AS time,\n  COALESCE(r.user_message, f.user_message) AS \"사용자 메시지\",\n  COALESCE(r.bot_message, f.bot_message) AS \"봇 메시지\",\n  COALESCE(r.agent_message, f.agent_message) AS \"상담원 메시지\"\nFROM fullfill f\n  LEFT JOIN results r ON f.time = r.time\n",
           "refId": "A"
         }
       ],
@@ -770,19 +770,17 @@
       "scroll": true,
       "showHeader": true,
       "sort": {
-        "col": 0,
+        "col": 5,
         "desc": true
       },
       "styles": [
         {
-          "$$hashKey": "object:736",
-          "alias": "Time",
+          "alias": "timestamp",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Time",
+          "pattern": "timestamp",
           "type": "date"
         },
         {
-          "$$hashKey": "object:737",
           "alias": "",
           "colorMode": null,
           "colors": [
@@ -799,7 +797,6 @@
       ],
       "targets": [
         {
-          "$$hashKey": "object:630",
           "alias": "",
           "format": "table",
           "rawSql": "SELECT\n  data#>>'{message, id}' AS id,\n  data#>>'{message, endUserId}' AS end_user_id,\n  data#>>'{message, conversationId}' AS conversation_id,\n  CASE\n    WHEN data#>>'{message, isUser}' = 'true' THEN 'user'\n    WHEN data#>>'{message, isUser}' = 'false' AND data#>>'{message, persona}' IS NOT NULL THEN 'agent'\n    ELSE 'bot'\n  END AS message_type,\n  data#>'{message, data}' AS data,\n  CAST(data#>>'{message, timestamp}' AS BIGINT) AS timestamp\nFROM events\nWHERE\n  event IN ('bot.message.sent', 'bot.message.received')\n  AND $__timeFilter(events.timestamp)\nORDER BY timestamp DESC",

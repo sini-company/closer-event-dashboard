@@ -30,3 +30,10 @@ GRANT readonly_role TO grafana_user;
 
 -- Grant all access on the grafana database
 GRANT ALL PRIVILEGES ON DATABASE grafana TO grafana_user;
+
+CREATE OR REPLACE FUNCTION TIMESTAMPTZ_TRUNC(_unit TEXT, _date TIMESTAMP WITH TIME ZONE, _timezone TEXT) RETURNS TIMESTAMP WITH TIME ZONE
+    LANGUAGE plpgsql
+AS
+$$
+BEGIN RETURN DATE_TRUNC(_unit, _date AT TIME ZONE _timezone)::TIMESTAMP WITHOUT TIME ZONE AT TIME ZONE _timezone; END
+$$;
